@@ -7,6 +7,10 @@ import android.graphics.Paint;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.Spinner;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Lukas on 9/23/17.
@@ -14,10 +18,11 @@ import android.view.View;
 
 public class DrumMachineView extends View {
     private Paint squarePaint;
+    private ArrayList<Row> listRows;
 
     public DrumMachineView(Context context, AttributeSet attrs) {
         super(context, attrs);
-
+        listRows=new ArrayList<Row>();
 
         squarePaint = new Paint();
         squarePaint.setColor(Color.RED);
@@ -31,27 +36,32 @@ public class DrumMachineView extends View {
         * 2nd 2 params: (width and height)
         * */
         System.out.println("\n\ndrawing the rect.....");
-        drawRows(canvas, 16, 3);
+        createRows(3);
+        drawRows(canvas);
 
     }
 
-    protected void drawRows(Canvas canvas, int numSquares, int numRows){
-        float topLeftX;
-        float topLeftY;
-        float bottomRightX;
-        float bottomRightY;
-
+    protected void createRows(int numRows){
         for (int i = 0; i < numRows; i++) {
-            for (int j = 0; j < numSquares; j++) {
-                topLeftX = j * (getWidth() / 16);
-                topLeftY = i * 200;
-                bottomRightX = j * (getWidth() / 16) + 100;
-                bottomRightY = i * 200 + 100;
-                canvas.drawRect(topLeftX, topLeftY, bottomRightX, bottomRightY, squarePaint);
+            this.listRows.add(new Row(i,16,getWidth(),100));
+        }
+
+    }
+
+    protected void drawRows(Canvas canvas){
+        ArrayList<Square> squares;
+        Square square;
+        System.out.println("in drawRows, listRows size: " + listRows.size());
+        for (int i = 0; i < listRows.size(); i++) {
+            squares=listRows.get(i).getListSquares();
+            System.out.println("in drawRows, squares size: " + squares.size());
+            for (int j = 0; j < squares.size(); j++) {
+                square=squares.get(j);
+                canvas.drawRect(square.getTopLeftX(), square.getTopLeftY(), square.getBottomRightX(),square.getBottomRightY(), squarePaint);
             }
-
-
 
         }
     }
+
+
 }
